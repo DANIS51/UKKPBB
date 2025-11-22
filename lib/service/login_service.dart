@@ -146,7 +146,10 @@ class LoginService {
 
     final response = await http.get(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
     );
 
     print("PRODUK STATUS: ${response.statusCode}");
@@ -197,7 +200,10 @@ class LoginService {
 
     final response = await http.get(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
     );
 
     print("KATEGORI STATUS: ${response.statusCode}");

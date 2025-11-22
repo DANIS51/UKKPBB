@@ -28,15 +28,16 @@ class _LoginPageState extends State<LoginPage> {
         height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [Color(0xFF0F1419), Color(0xFF1A2332)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: Center(
           child: Card(
             elevation: 20,
-            shadowColor: Colors.black54,
+            shadowColor: Colors.blue.withOpacity(0.3),
+            color: const Color(0xFF1E2A38),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(22),
             ),
@@ -49,10 +50,23 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // LOGO
-                    const CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.deepPurple,
-                      child: Icon(Icons.store, color: Colors.white, size: 40),
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.blue.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: const CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Color(0xFF1E88E5),
+                        child: Icon(Icons.store, color: Colors.white, size: 40),
+                      ),
                     ),
                     const SizedBox(height: 16),
 
@@ -61,27 +75,38 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF444444),
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 8),
 
-                    const Text(
+                    Text(
                       "Masuk untuk melanjutkan",
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: Colors.blue[200]),
                     ),
                     const SizedBox(height: 30),
 
                     // EMAIL / USERNAME INPUT
                     TextFormField(
                       controller: emailController,
+                      style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: 'Email / Username',
-                        prefixIcon: const Icon(Icons.person_outline),
+                        labelStyle: TextStyle(color: Colors.blue[200]),
+                        prefixIcon: Icon(Icons.person_outline, color: Colors.blue[300]),
                         filled: true,
-                        fillColor: Colors.grey[100],
+                        fillColor: const Color(0xFF2A3F5F),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.blue.withOpacity(0.3)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Color(0xFF1E88E5), width: 2),
                         ),
                       ),
                       validator: (v) => v!.isEmpty ? 'Tidak boleh kosong' : null,
@@ -92,19 +117,31 @@ class _LoginPageState extends State<LoginPage> {
                     TextFormField(
                       controller: passwordController,
                       obscureText: !_isPasswordVisible,
+                      style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: 'Kata Sandi',
-                        prefixIcon: const Icon(Icons.lock_outline),
+                        labelStyle: TextStyle(color: Colors.blue[200]),
+                        prefixIcon: Icon(Icons.lock_outline, color: Colors.blue[300]),
                         filled: true,
-                        fillColor: Colors.grey[100],
+                        fillColor: const Color(0xFF2A3F5F),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.blue.withOpacity(0.3)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Color(0xFF1E88E5), width: 2),
                         ),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isPasswordVisible
                                 ? Icons.visibility_off
                                 : Icons.visibility,
+                            color: Colors.blue[300],
                           ),
                           onPressed: () {
                             setState(() {
@@ -124,11 +161,13 @@ class _LoginPageState extends State<LoginPage> {
                       height: 48,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF6B4EFF),
+                          backgroundColor: const Color(0xFF1E88E5),
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
                           elevation: 6,
+                          shadowColor: Colors.blue.withOpacity(0.5),
                         ),
                         onPressed: _isLoading
                             ? null
@@ -158,7 +197,10 @@ class _LoginPageState extends State<LoginPage> {
                                     );
                                   } catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(e.toString())),
+                                      SnackBar(
+                                        content: Text(e.toString()),
+                                        backgroundColor: Colors.red[400],
+                                      ),
                                     );
                                   } finally {
                                     setState(() => _isLoading = false);
@@ -187,11 +229,11 @@ class _LoginPageState extends State<LoginPage> {
                           MaterialPageRoute(builder: (_) => const RegisterPage()),
                         );
                       },
-                      child: const Text(
+                      child: Text(
                         'Belum punya akun? Daftar',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.deepPurple,
+                          color: Colors.blue[300],
                           fontWeight: FontWeight.w600,
                         ),
                       ),

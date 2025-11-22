@@ -22,7 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
     loadProfile();
   }
 
-  void loadProfile() async {
+  Future<void> loadProfile() async {
     try {
       final data = await loginService.getUserProfile(widget.token);
 
@@ -39,142 +39,277 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Profil Saya"),
-        centerTitle: true,
-        elevation: 0,
-      ),
-
+      // 1. Background gelap sesuai tema
+      backgroundColor: const Color(0xFF0F1419),
+      
+      // 2. AppBar dihapus karena sudah ada di HomePage
+      
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFF1E88E5)))
           : profileData == null
-              ? const Center(child: Text("Gagal memuat profil"))
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
+              ? Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // FOTO PROFIL
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundImage: (profileData!["avatar"] != null &&
-                                profileData!["avatar"].toString().isNotEmpty)
-                            ? NetworkImage(profileData!["avatar"])
-                            : const AssetImage("assets/user.png")
-                                as ImageProvider,
+                      const Icon(
+                        Icons.error_outline,
+                        size: 60,
+                        color: Colors.red,
                       ),
-
-                      const SizedBox(height: 20),
-
-                      // NAMA
-                      Text(
-                        profileData!["name"] ?? "Nama tidak tersedia",
-                        style: const TextStyle(
-                          fontSize: 24,
+                      const SizedBox(height: 16),
+                      const Text(
+                        "Gagal memuat profil",
+                        style: TextStyle(
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
-
-                      const SizedBox(height: 5),
-
-                      // EMAIL
+                      const SizedBox(height: 8),
                       Text(
-                        profileData!["email"] ?? "-",
-                        style:
-                            TextStyle(fontSize: 16, color: Colors.grey[600]),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // CARD INFO
-                      Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                        "Terjadi kesalahan saat memuat data profil",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[400],
                         ),
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton.icon(
+                        onPressed: loadProfile,
+                        icon: const Icon(Icons.refresh),
+                        label: const Text("Coba Lagi"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1E88E5),
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : RefreshIndicator(
+                  color: const Color(0xFF1E88E5),
+                  onRefresh: () async {
+                    await loadProfile();
+                  },
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        // Header dengan foto profil
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(30),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xFF1E88E5),
+                                Color(0xFF1565C0),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF1E88E5).withOpacity(0.3),
+                                spreadRadius: 2,
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
                           child: Column(
                             children: [
-                              infoRow(
-                                Icons.person,
-                                "Username",
-                                profileData!["username"] ?? "-",
+                              // FOTO PROFIL
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 4),
+                                ),
+                                child: CircleAvatar(
+                                  radius: 60,
+                                  backgroundColor: Colors.white24,
+                                  backgroundImage: (profileData!["avatar"] != null &&
+                                          profileData!["avatar"].toString().isNotEmpty)
+                                      ? NetworkImage(profileData!["avatar"])
+                                      : null,
+                                  child: (profileData!["avatar"] == null ||
+                                          profileData!["avatar"].toString().isEmpty)
+                                      ? const Icon(Icons.person, size: 60, color: Colors.white)
+                                      : null,
+                                ),
                               ),
-                              const Divider(),
 
-                              infoRow(
-                                Icons.verified_user,
-                                "Role",
-                                profileData!["role"] ?? "-",
+                              const SizedBox(height: 20),
+
+                              // NAMA
+                              Text(
+                                profileData!["name"] ?? "Nama tidak tersedia",
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
-                              const Divider(),
 
-                              infoRow(
-                                Icons.access_time,
-                                "Dibuat",
-                                profileData!["created_at"] ?? "-",
+                              const SizedBox(height: 5),
+
+                              // EMAIL
+                              Text(
+                                profileData!["email"] ?? "-",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white70,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 25),
+                        const SizedBox(height: 24),
 
-                      // TOMBOL UPDATE PROFIL
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProfileUpdatePage(
-                                  token: widget.token,
-                                  currentProfile: profileData!,
-                                ),
+                        // CARD INFO
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1E2A38),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
                               ),
-                            );
-
-                            if (result == true) {
-                              loadProfile(); // refresh setelah update
-                            }
-                          },
-                          icon: const Icon(Icons.edit),
-                          label: const Text("Update Profil"),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              children: [
+                                infoRow(
+                                  Icons.person,
+                                  "Username",
+                                  profileData!["username"] ?? "-",
+                                ),
+                                const SizedBox(height: 16),
+                                Container(
+                                  height: 1,
+                                  color: const Color(0xFF0F1419),
+                                ),
+                                const SizedBox(height: 16),
+                                infoRow(
+                                  Icons.verified_user,
+                                  "Role",
+                                  profileData!["role"] ?? "-",
+                                ),
+                                const SizedBox(height: 16),
+                                Container(
+                                  height: 1,
+                                  color: const Color(0xFF0F1419),
+                                ),
+                                const SizedBox(height: 16),
+                                infoRow(
+                                  Icons.access_time,
+                                  "Dibuat",
+                                  profileData!["created_at"] ?? "-",
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 15),
+                        const SizedBox(height: 24),
 
-                      // TOMBOL LOGOUT
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/',
-                              (Route<dynamic> route) => false,
-                            );
-                          },
-                          icon: const Icon(Icons.logout),
-                          label: const Text("Logout"),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            backgroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                        // TOMBOL UPDATE PROFIL
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProfileUpdatePage(
+                                    token: widget.token,
+                                    currentProfile: profileData!,
+                                  ),
+                                ),
+                              );
+
+                              if (result == true) {
+                                loadProfile(); // refresh setelah update
+                              }
+                            },
+                            icon: const Icon(Icons.edit),
+                            label: const Text("Update Profil"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF1E88E5),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 4,
                             ),
                           ),
                         ),
-                      ),
-                    ],
+
+                        const SizedBox(height: 16),
+
+                        // TOMBOL LOGOUT
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  backgroundColor: const Color(0xFF1E2A38),
+                                  title: const Text(
+                                    "Konfirmasi Logout",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  content: const Text(
+                                    "Apakah Anda yakin ingin keluar dari akun?",
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text(
+                                        "Batal",
+                                        style: TextStyle(color: Color(0xFF1E88E5)),
+                                      ),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        Navigator.of(context).pushNamedAndRemoveUntil(
+                                          '/',
+                                          (Route<dynamic> route) => false,
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                      ),
+                                      child: const Text("Logout"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.logout),
+                            label: const Text("Logout"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
     );
@@ -184,25 +319,37 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget infoRow(IconData icon, String title, String value) {
     return Row(
       children: [
-        Icon(icon, size: 28),
-        const SizedBox(width: 15),
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E88E5).withOpacity(0.2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            icon,
+            size: 24,
+            color: const Color(0xFF1E88E5),
+          ),
+        ),
+        const SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey,
-                  height: 1.2,
+                  color: Colors.grey[400],
                 ),
               ),
+              const SizedBox(height: 4),
               Text(
                 value,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
+                  color: Colors.white,
                 ),
               ),
             ],

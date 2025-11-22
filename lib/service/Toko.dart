@@ -48,20 +48,22 @@ class _TokoPageState extends State<TokoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Toko Saya"),
-        centerTitle: true,
-      ),
-
+      // 1. Background gelap sesuai tema
+      backgroundColor: const Color(0xFF0F1419),
+      
+      // 2. AppBar dihapus dari sini karena sudah ada di HomePage
+      
+      // 3. FloatingActionButton dengan tema gelap
       floatingActionButton: tokoData == null
           ? null
           : FloatingActionButton(
               onPressed: _navigateToAddStore,
-              child: const Icon(Icons.edit),
+              backgroundColor: const Color(0xFF1E88E5),
+              child: const Icon(Icons.edit, color: Colors.white),
             ),
 
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFF1E88E5)))
 
           // ================================================
           // Jika belum punya toko
@@ -71,17 +73,41 @@ class _TokoPageState extends State<TokoPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.store_mall_directory,
-                          size: 80, color: Colors.grey),
-                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1E2A38),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF1E88E5).withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.store_mall_directory,
+                          size: 80,
+                          color: Color(0xFF1E88E5),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
                       const Text(
                         "Belum ada toko",
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
-                      const SizedBox(height: 8),
-                      const Text("Silakan buat toko terlebih dahulu"),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 12),
+                      Text(
+                        "Silakan buat toko terlebih dahulu",
+                        style: TextStyle(
+                            fontSize: 16, color: Colors.grey[400]),
+                      ),
+                      const SizedBox(height: 30),
 
                       // Tombol Buat Toko
                       ElevatedButton.icon(
@@ -89,11 +115,14 @@ class _TokoPageState extends State<TokoPage> {
                         icon: const Icon(Icons.add_business),
                         label: const Text("Buat Toko"),
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1E88E5),
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12),
+                              horizontal: 24, vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
+                          elevation: 4,
                         ),
                       )
                     ],
@@ -107,35 +136,74 @@ class _TokoPageState extends State<TokoPage> {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      // Nama Toko
-                      Text(
-                        tokoData!["nama_toko"] ?? "Nama Toko tidak tersedia",
-                        style: const TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
+                      // Header dengan nama toko
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF1E88E5),
+                              Color(0xFF1565C0),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF1E88E5).withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            const Icon(
+                              Icons.store,
+                              size: 50,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              tokoData!["nama_toko"] ?? "Nama Toko tidak tersedia",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              tokoData!["deskripsi"] ?? "Deskripsi tidak tersedia",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 24),
 
-                      // Deskripsi
-                      Text(
-                        tokoData!["deskripsi"] ?? "Deskripsi tidak tersedia",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Card Informasi
-                      Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                      // Card Informasi dengan tema gelap
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1E2A38),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(24),
                           child: Column(
                             children: [
                               infoRow(
@@ -143,13 +211,23 @@ class _TokoPageState extends State<TokoPage> {
                                 "Alamat",
                                 tokoData!["alamat"] ?? "-",
                               ),
-                              const Divider(),
+                              const SizedBox(height: 16),
+                              Container(
+                                height: 1,
+                                color: const Color(0xFF0F1419),
+                              ),
+                              const SizedBox(height: 16),
                               infoRow(
                                 Icons.phone,
                                 "Kontak",
                                 tokoData!["kontak"]?.toString() ?? "-",
                               ),
-                              const Divider(),
+                              const SizedBox(height: 16),
+                              Container(
+                                height: 1,
+                                color: const Color(0xFF0F1419),
+                              ),
+                              const SizedBox(height: 16),
                               infoRow(
                                 Icons.calendar_today,
                                 "Dibuat",
@@ -168,24 +246,37 @@ class _TokoPageState extends State<TokoPage> {
   Widget infoRow(IconData icon, String title, String value) {
     return Row(
       children: [
-        Icon(icon, size: 28, color: Colors.deepPurple),
-        const SizedBox(width: 15),
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E88E5).withOpacity(0.2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            icon,
+            size: 24,
+            color: const Color(0xFF1E88E5),
+          ),
+        ),
+        const SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  color: Colors.grey,
+                style: TextStyle(
+                  color: Colors.grey[400],
                   fontSize: 14,
                 ),
               ),
+              const SizedBox(height: 4),
               Text(
                 value,
                 style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w600,
+                  color: Colors.white,
                 ),
               ),
             ],

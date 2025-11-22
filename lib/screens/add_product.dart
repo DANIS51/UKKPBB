@@ -57,8 +57,12 @@ class _AddProductPageState extends State<AddProductPage> {
     if (!_formKey.currentState!.validate()) return;
 
     if (selectedKategori == null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Pilih kategori!")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Pilih kategori!"),
+          backgroundColor: Colors.red,
+        ),
+      );
       return;
     }
 
@@ -77,15 +81,22 @@ class _AddProductPageState extends State<AddProductPage> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Produk berhasil ditambahkan!")),
+        const SnackBar(
+          content: Text("Produk berhasil ditambahkan!"),
+          backgroundColor: Color(0xFF1E88E5),
+        ),
       );
 
       Navigator.pop(context);
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Gagal tambah produk: $e")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Gagal tambah produk: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
 
     if (!mounted) return;
@@ -95,96 +106,355 @@ class _AddProductPageState extends State<AddProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Tambah Produk")),
-      body: Padding(
+      // 1. Background gelap sesuai tema
+      backgroundColor: const Color(0xFF0F1419),
+      
+      // 2. AppBar dengan tombol kembali
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: const Color(0xFF1E2A38),
+        title: const Text(
+          "Tambah Produk",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        // Ikon di AppBar dibuat putih agar kontras
+        iconTheme: const IconThemeData(color: Colors.white),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: namaController,
-                decoration: const InputDecoration(
-                  labelText: "Nama Produk",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (v) =>
-                    v!.isEmpty ? "Nama produk tidak boleh kosong" : null,
-              ),
-              const SizedBox(height: 16),
-
-              TextFormField(
-                controller: hargaController,
-                decoration: const InputDecoration(
-                  labelText: "Harga",
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                validator: (v) => v!.isEmpty ? "Masukkan harga" : null,
-              ),
-              const SizedBox(height: 16),
-
-              TextFormField(
-                controller: deskripsiController,
-                maxLines: 3,
-                decoration: const InputDecoration(
-                  labelText: "Deskripsi",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              TextFormField(
-                controller: stokController,
-                decoration: const InputDecoration(
-                  labelText: "Stok",
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                validator: (v) => v!.isEmpty ? "Masukkan stok" : null,
-              ),
-              const SizedBox(height: 16),
-
-              loadingKategori
-                  ? const Center(child: CircularProgressIndicator())
-                  : DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: "Kategori",
-                        border: OutlineInputBorder(),
-                      ),
-
-                      value: kategoriList.any((item) =>
-                              item['id_kategori'].toString() ==
-                              selectedKategori)
-                          ? selectedKategori
-                          : null,
-
-                      items: kategoriList.map((item) {
-                        return DropdownMenuItem<String>(
-                          value: item['id_kategori'].toString(),
-                          child: Text(item['nama_kategori']),
-                        );
-                      }).toList(),
-
-                      onChanged: (value) {
-                        setState(() {
-                          selectedKategori = value;
-                        });
-                      },
-
-                      validator: (value) {
-                        if (value == null) return "Pilih kategori!";
-                        return null;
-                      },
+              // Header
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFF1E88E5),
+                      Color(0xFF1565C0),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF1E88E5).withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
                     ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.add_shopping_cart,
+                      size: 40,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      "Tambah Produk Baru",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Lengkapi informasi produk untuk ditambahkan ke toko Anda",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white.withOpacity(0.8),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
               const SizedBox(height: 24),
 
-              ElevatedButton(
-                onPressed: loadingSubmit ? null : simpanProduk,
-                child: loadingSubmit
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Simpan Produk"),
+              // Form container
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2A38),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Nama Produk
+                    const Text(
+                      "Nama Produk",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: namaController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: "Masukkan nama produk",
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        filled: true,
+                        fillColor: const Color(0xFF0F1419),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.red),
+                        ),
+                        errorStyle: const TextStyle(color: Colors.red),
+                      ),
+                      validator: (v) =>
+                          v!.isEmpty ? "Nama produk tidak boleh kosong" : null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Harga
+                    const Text(
+                      "Harga",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: hargaController,
+                      style: const TextStyle(color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: "Masukkan harga produk",
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        filled: true,
+                        fillColor: const Color(0xFF0F1419),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.red),
+                        ),
+                        errorStyle: const TextStyle(color: Colors.red),
+                        prefixIcon: const Icon(Icons.attach_money, color: Color(0xFF1E88E5)),
+                      ),
+                      validator: (v) => v!.isEmpty ? "Masukkan harga" : null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Stok
+                    const Text(
+                      "Stok",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: stokController,
+                      style: const TextStyle(color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: "Masukkan jumlah stok",
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        filled: true,
+                        fillColor: const Color(0xFF0F1419),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.red),
+                        ),
+                        errorStyle: const TextStyle(color: Colors.red),
+                        prefixIcon: const Icon(Icons.inventory_2, color: Color(0xFF1E88E5)),
+                      ),
+                      validator: (v) => v!.isEmpty ? "Masukkan stok" : null,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Dropdown Kategori
+                    const Text(
+                      "Kategori",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    loadingKategori
+                        ? const Center(
+                            child: CircularProgressIndicator(color: Color(0xFF1E88E5)))
+                        : DropdownButtonFormField<String>(
+                            style: const TextStyle(color: Colors.white),
+                            dropdownColor: const Color(0xFF1E2A38),
+                            decoration: InputDecoration(
+                              hintText: "Pilih kategori",
+                              hintStyle: TextStyle(color: Colors.grey[400]),
+                              filled: true,
+                              fillColor: const Color(0xFF0F1419),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(color: Colors.red),
+                              ),
+                              errorStyle: const TextStyle(color: Colors.red),
+                              prefixIcon: const Icon(Icons.category, color: Color(0xFF1E88E5)),
+                            ),
+                            value: kategoriList.any((item) =>
+                                    item['id_kategori'].toString() == selectedKategori)
+                                ? selectedKategori
+                                : null,
+                            items: kategoriList.map((item) {
+                              return DropdownMenuItem<String>(
+                                value: item['id_kategori'].toString(),
+                                child: Text(item['nama_kategori'] ?? "-"),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedKategori = value;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null) return "Pilih kategori!";
+                              return null;
+                            },
+                          ),
+                    const SizedBox(height: 16),
+
+                    // Deskripsi
+                    const Text(
+                      "Deskripsi",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: deskripsiController,
+                      maxLines: 3,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: "Masukkan deskripsi produk",
+                        hintStyle: TextStyle(color: Colors.grey[400]),
+                        filled: true,
+                        fillColor: const Color(0xFF0F1419),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.red),
+                        ),
+                        errorStyle: const TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Button Simpan
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: loadingSubmit ? null : simpanProduk,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1E88E5),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 4,
+                  ),
+                  child: loadingSubmit
+                      ? const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            Text("Menyimpan..."),
+                          ],
+                        )
+                      : const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.save),
+                            SizedBox(width: 8),
+                            Text("Simpan Produk"),
+                          ],
+                        ),
+                ),
               ),
             ],
           ),
