@@ -1,0 +1,6 @@
+- [x] Add addProduct method to lib/service/login_service.dart
+- [x] Create lib/screens/add_product.dart with form for adding product
+- [ ] Modify lib/screens/products.dart to add FloatingActionButton for navigation and RefreshIndicator for list
+- [x] Add updateProduct and deleteProduct methods to lib/service/login_service.dart
+- [ ] Create lib/screens/edit_product.dart with form for editing product
+- [ ] Modify lib/screens/products.dart to add edit (onTap) and delete actions
