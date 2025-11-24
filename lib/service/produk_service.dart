@@ -114,13 +114,24 @@ class ProdukService {
   // DELETE PRODUCT (FIXED)
   // =====================================================
   Future<void> deleteProduct(String token, int productId) async {
-    final url = Uri.parse('$_baseUrl/products/$productId'); // FIXED — tanpa /delete
+    final url = Uri.parse('$_baseUrl/products/$productId/delete');
 
-    final response = await http.delete(
+    final body = {
+      'id_produk': productId.toString(),
+    };
+
+    final encodedBody = body.entries
+        .map((e) =>
+            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        .join('&');
+
+    final response = await http.post(
       url,
       headers: {
         'Authorization': 'Bearer $token',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
+      body: encodedBody,
     );
 
     print("DELETE PRODUCT STATUS: ${response.statusCode}");

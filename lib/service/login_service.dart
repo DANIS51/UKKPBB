@@ -358,12 +358,113 @@ class LoginService {
   }
 
   // ============================
-  // DELETE PRODUCT (OPSI A: POST + _method=DELETE)
+  // DELETE PRODUCT (try multiple patterns to avoid 405)
   // ============================
   Future<void> deleteProduct(String token, int productId) async {
-    final url = Uri.parse('$_baseUrl/stores/products/$productId');
+    final urlWithId = Uri.parse('$_baseUrl/stores/products/$productId');
+    final urlNoId = Uri.parse('$_baseUrl/stores/products');
+    final urlDelete = Uri.parse('$_baseUrl/stores/products/delete');
+    final urlIdDelete =
+        Uri.parse('$_baseUrl/stores/products/$productId/delete');
 
-    final body = {'_method': 'DELETE'};
+    String encodeForm(Map<String, String> m) => m.entries
+        .map((e) =>
+            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        .join('&');
+
+    final baseHeadersForm = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final baseHeadersJson = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    http.Response response;
+
+    // 1) POST to /stores/products/{id} with _method=DELETE as form (common Laravel)
+    response = await http.post(
+      urlWithId,
+      headers: baseHeadersForm,
+      body: encodeForm({'_method': 'DELETE'}),
+    );
+    print("DELETE TRY 1 STATUS: ${response.statusCode}");
+    print("DELETE TRY 1 BODY: ${response.body}");
+    if (response.statusCode == 200 || response.statusCode == 204) return;
+
+    response = await http.post(
+      urlWithId,
+      headers: baseHeadersJson,
+      body: jsonEncode({'_method': 'DELETE'}),
+    );
+    print("DELETE TRY 2 STATUS: ${response.statusCode}");
+    print("DELETE TRY 2 BODY: ${response.body}");
+    if (response.statusCode == 200 || response.statusCode == 204) return;
+
+    // 3) POST to /stores/products with form {id}
+    response = await http.post(
+      urlNoId,
+      headers: baseHeadersForm,
+      body: encodeForm({'id': productId.toString()}),
+    );
+    print("DELETE TRY 3 STATUS: ${response.statusCode}");
+    print("DELETE TRY 3 BODY: ${response.body}");
+    if (response.statusCode == 200 || response.statusCode == 204) return;
+
+    response = await http.post(
+      urlNoId,
+      headers: baseHeadersForm,
+      body: encodeForm({'_method': 'DELETE', 'id': productId.toString()}),
+    );
+    print("DELETE TRY 4 STATUS: ${response.statusCode}");
+    print("DELETE TRY 4 BODY: ${response.body}");
+    if (response.statusCode == 200 || response.statusCode == 204) return;
+
+    response = await http.post(
+      urlDelete,
+      headers: baseHeadersJson,
+      body: jsonEncode({'id': productId}),
+    );
+    print("DELETE TRY 5 STATUS: ${response.statusCode}");
+    print("DELETE TRY 5 BODY: ${response.body}");
+    if (response.statusCode == 200 || response.statusCode == 204) return;
+
+    response = await http.post(
+      urlIdDelete,
+      headers: baseHeadersForm,
+      body: encodeForm({'_method': 'DELETE'}),
+    );
+    print("DELETE TRY 6 STATUS: ${response.statusCode}");
+    print("DELETE TRY 6 BODY: ${response.body}");
+    if (response.statusCode == 200 || response.statusCode == 204) return;
+
+    throw Exception('Gagal hapus produk, status code: ${response.statusCode}');
+  }
+
+  // ============================
+  // UPDATE STORE / EDIT TOKO
+  // Endpoint: POST /stores/save
+  // ============================
+  Future<Map<String, dynamic>> updateStore(
+    String token, {
+    required int storeId,
+    required String namaToko,
+    String? alamat,
+    String? kontak,
+    String? deskripsi,
+  }) async {
+    final url = Uri.parse('$_baseUrl/stores/save');
+
+    final body = {
+      'id_toko': storeId.toString(),
+      'nama_toko': namaToko,
+      if (alamat != null) 'alamat': alamat,
+      if (kontak != null) 'kontak': kontak,
+      if (deskripsi != null) 'deskripsi': deskripsi,
+    };
 
     final encodedBody = body.entries
         .map((e) =>
@@ -374,18 +475,25 @@ class LoginService {
       url,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
         'Authorization': 'Bearer $token',
       },
       body: encodedBody,
     );
 
-    print("DELETE PRODUCT STATUS: ${response.statusCode}");
-    print("DELETE PRODUCT BODY: ${response.body}");
+    print("UPDATE STORE STATUS: ${response.statusCode}");
+    print("UPDATE STORE BODY: ${response.body}");
 
-    if (response.statusCode == 200 || response.statusCode == 204) {
-      return;
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+      return Map<String, dynamic>.from(data['data'] ?? data);
     }
 
-    throw Exception('Gagal hapus produk, status code: ${response.statusCode}');
+    if (response.statusCode == 422) {
+      final data = jsonDecode(response.body);
+      throw Exception(data['errors'] ?? data['message']);
+    }
+
+    throw Exception('Gagal update toko, status code: ${response.statusCode}');
   }
 }

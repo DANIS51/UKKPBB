@@ -26,6 +26,10 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final data = await loginService.getUserProfile(widget.token);
 
+      // DEBUG: lihat semua field yang ada di response
+      print("PROFILE DATA: $data");
+      print("PROFILE KEYS: ${data.keys.toList()}");
+
       setState(() {
         profileData = data;
         isLoading = false;
@@ -41,11 +45,12 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       // 1. Background gelap sesuai tema
       backgroundColor: const Color(0xFF0F1419),
-      
+
       // 2. AppBar dihapus karena sudah ada di HomePage
-      
+
       body: isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF1E88E5)))
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF1E88E5)))
           : profileData == null
               ? Center(
                   child: Column(
@@ -122,18 +127,25 @@ class _ProfilePageState extends State<ProfilePage> {
                               Container(
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white, width: 4),
+                                  border:
+                                      Border.all(color: Colors.white, width: 4),
                                 ),
                                 child: CircleAvatar(
                                   radius: 60,
                                   backgroundColor: Colors.white24,
-                                  backgroundImage: (profileData!["avatar"] != null &&
-                                          profileData!["avatar"].toString().isNotEmpty)
-                                      ? NetworkImage(profileData!["avatar"])
-                                      : null,
+                                  backgroundImage:
+                                      (profileData!["avatar"] != null &&
+                                              profileData!["avatar"]
+                                                  .toString()
+                                                  .isNotEmpty)
+                                          ? NetworkImage(profileData!["avatar"])
+                                          : null,
                                   child: (profileData!["avatar"] == null ||
-                                          profileData!["avatar"].toString().isEmpty)
-                                      ? const Icon(Icons.person, size: 60, color: Colors.white)
+                                          profileData!["avatar"]
+                                              .toString()
+                                              .isEmpty)
+                                      ? const Icon(Icons.person,
+                                          size: 60, color: Colors.white)
                                       : null,
                                 ),
                               ),
@@ -142,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                               // NAMA
                               Text(
-                                profileData!["name"] ?? "Nama tidak tersedia",
+                                profileData!["nama"] ?? "Nama tidak tersedia",
                                 style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -275,13 +287,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                       onPressed: () => Navigator.pop(context),
                                       child: const Text(
                                         "Batal",
-                                        style: TextStyle(color: Color(0xFF1E88E5)),
+                                        style:
+                                            TextStyle(color: Color(0xFF1E88E5)),
                                       ),
                                     ),
                                     ElevatedButton(
                                       onPressed: () {
                                         Navigator.pop(context);
-                                        Navigator.of(context).pushNamedAndRemoveUntil(
+                                        Navigator.of(context)
+                                            .pushNamedAndRemoveUntil(
                                           '/',
                                           (Route<dynamic> route) => false,
                                         );

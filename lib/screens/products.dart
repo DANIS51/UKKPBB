@@ -141,6 +141,7 @@ class _ProductsPageState extends State<ProductsPage> {
 
     try {
       await produkService.deleteProduct(widget.token, id);
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -334,7 +335,8 @@ class _ProductsPageState extends State<ProductsPage> {
               children: [
                 // Badge stok
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: stokValue <= 5
                         ? Colors.red.withOpacity(0.2)
@@ -352,7 +354,9 @@ class _ProductsPageState extends State<ProductsPage> {
                       Icon(
                         Icons.inventory_2_outlined,
                         size: 14,
-                        color: stokValue <= 5 ? Colors.red : const Color(0xFF1E88E5),
+                        color: stokValue <= 5
+                            ? Colors.red
+                            : const Color(0xFF1E88E5),
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -360,19 +364,22 @@ class _ProductsPageState extends State<ProductsPage> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: stokValue <= 5 ? Colors.red : const Color(0xFF1E88E5),
+                          color: stokValue <= 5
+                              ? Colors.red
+                              : const Color(0xFF1E88E5),
                         ),
                       ),
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(width: 12),
-                
+
                 // Badge kategori
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.purple.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
@@ -381,7 +388,8 @@ class _ProductsPageState extends State<ProductsPage> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.category, size: 14, color: Colors.purple),
+                        const Icon(Icons.category,
+                            size: 14, color: Colors.purple),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -402,7 +410,7 @@ class _ProductsPageState extends State<ProductsPage> {
             ),
 
             const SizedBox(height: 8),
-            
+
             // Tanggal upload
             Row(
               children: [
@@ -441,10 +449,12 @@ class _ProductsPageState extends State<ProductsPage> {
                     }
                   },
                   icon: const Icon(Icons.edit, color: Color(0xFF1E88E5)),
-                  label: const Text("Edit", style: TextStyle(color: Color(0xFF1E88E5))),
+                  label: const Text("Edit",
+                      style: TextStyle(color: Color(0xFF1E88E5))),
                   style: TextButton.styleFrom(
                     backgroundColor: const Color(0xFF1E88E5).withOpacity(0.1),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -458,10 +468,12 @@ class _ProductsPageState extends State<ProductsPage> {
                         product['idProduct'],
                   ),
                   icon: const Icon(Icons.delete, color: Colors.red),
-                  label: const Text("Hapus", style: TextStyle(color: Colors.red)),
+                  label:
+                      const Text("Hapus", style: TextStyle(color: Colors.red)),
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.red.withOpacity(0.1),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -485,7 +497,8 @@ class _ProductsPageState extends State<ProductsPage> {
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF1E88E5)))
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF1E88E5)))
           : RefreshIndicator(
               color: const Color(0xFF1E88E5),
               onRefresh: _refreshProducts,
@@ -568,7 +581,8 @@ class _ProductsPageState extends State<ProductsPage> {
                             if (item is Map<String, dynamic>) {
                               return buildProductCard(item);
                             } else if (item is Map) {
-                              return buildProductCard(Map<String, dynamic>.from(item));
+                              return buildProductCard(
+                                  Map<String, dynamic>.from(item));
                             } else {
                               return Container(
                                 margin: const EdgeInsets.only(bottom: 12),
