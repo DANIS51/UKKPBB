@@ -25,6 +25,8 @@ class _TokoPageState extends State<TokoPage> {
   void loadToko() async {
     try {
       final data = await loginService.getToko(widget.token);
+      print(
+          "DEBUG TOKO DATA: $data"); // Debug print untuk melihat data response
       setState(() {
         tokoData = data;
         isLoading = false;
@@ -50,9 +52,9 @@ class _TokoPageState extends State<TokoPage> {
     return Scaffold(
       // 1. Background gelap sesuai tema
       backgroundColor: const Color(0xFF0F1419),
-      
+
       // 2. AppBar dihapus dari sini karena sudah ada di HomePage
-      
+
       // 3. FloatingActionButton dengan tema gelap
       floatingActionButton: tokoData == null
           ? null
@@ -63,7 +65,8 @@ class _TokoPageState extends State<TokoPage> {
             ),
 
       body: isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF1E88E5)))
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF1E88E5)))
 
           // ================================================
           // Jika belum punya toko
@@ -104,8 +107,7 @@ class _TokoPageState extends State<TokoPage> {
                       const SizedBox(height: 12),
                       Text(
                         "Silakan buat toko terlebih dahulu",
-                        style: TextStyle(
-                            fontSize: 16, color: Colors.grey[400]),
+                        style: TextStyle(fontSize: 16, color: Colors.grey[400]),
                       ),
                       const SizedBox(height: 30),
 
@@ -166,7 +168,8 @@ class _TokoPageState extends State<TokoPage> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              tokoData!["nama_toko"] ?? "Nama Toko tidak tersedia",
+                              tokoData!["nama_toko"] ??
+                                  "Nama Toko tidak tersedia",
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 26,
@@ -176,7 +179,8 @@ class _TokoPageState extends State<TokoPage> {
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              tokoData!["deskripsi"] ?? "Deskripsi tidak tersedia",
+                              tokoData!["deskripsi"] ??
+                                  "Deskripsi tidak tersedia",
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 16,
@@ -220,7 +224,7 @@ class _TokoPageState extends State<TokoPage> {
                               infoRow(
                                 Icons.phone,
                                 "Kontak",
-                                tokoData!["kontak"]?.toString() ?? "-",
+                                tokoData!["kontak_toko"]?.toString() ?? "-",
                               ),
                               const SizedBox(height: 16),
                               Container(
@@ -231,7 +235,7 @@ class _TokoPageState extends State<TokoPage> {
                               infoRow(
                                 Icons.calendar_today,
                                 "Dibuat",
-                                tokoData!["created_at"] ?? "-",
+                                tokoData!["tanggal_dibuat"] ?? "-",
                               ),
                             ],
                           ),

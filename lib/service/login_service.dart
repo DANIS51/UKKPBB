@@ -358,17 +358,25 @@ class LoginService {
   }
 
   // ============================
-  // DELETE PRODUCT
+  // DELETE PRODUCT (OPSI A: POST + _method=DELETE)
   // ============================
   Future<void> deleteProduct(String token, int productId) async {
     final url = Uri.parse('$_baseUrl/stores/products/$productId');
 
-    final response = await http.delete(
+    final body = {'_method': 'DELETE'};
+
+    final encodedBody = body.entries
+        .map((e) =>
+            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        .join('&');
+
+    final response = await http.post(
       url,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer $token',
       },
+      body: encodedBody,
     );
 
     print("DELETE PRODUCT STATUS: ${response.statusCode}");

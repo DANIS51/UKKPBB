@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final Map<String, dynamic> product;
@@ -67,14 +68,16 @@ class ProductDetailPage extends StatelessWidget {
                         errorBuilder: (_, __, ___) => Container(
                           height: 250,
                           color: const Color(0xFF2A3F5F),
-                          child: const Icon(Icons.broken_image, color: Colors.grey, size: 50),
+                          child: const Icon(Icons.broken_image,
+                              color: Colors.grey, size: 50),
                         ),
                       )
                     : Container(
                         height: 250,
                         width: double.infinity,
                         color: const Color(0xFF2A3F5F),
-                        child: Icon(Icons.image_not_supported, size: 50, color: Colors.blue[300]),
+                        child: Icon(Icons.image_not_supported,
+                            size: 50, color: Colors.blue[300]),
                       ),
               ),
             ),
@@ -128,15 +131,16 @@ class ProductDetailPage extends StatelessWidget {
                     children: [
                       // Badge stok
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: stokValue <= 5 
-                              ? Colors.red.withOpacity(0.2) 
+                          color: stokValue <= 5
+                              ? Colors.red.withOpacity(0.2)
                               : const Color(0xFF1E88E5).withOpacity(0.2),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: stokValue <= 5 
-                                ? Colors.red.withOpacity(0.5) 
+                            color: stokValue <= 5
+                                ? Colors.red.withOpacity(0.5)
                                 : const Color(0xFF1E88E5).withOpacity(0.5),
                           ),
                         ),
@@ -146,7 +150,9 @@ class ProductDetailPage extends StatelessWidget {
                             Icon(
                               Icons.inventory_2_outlined,
                               size: 16,
-                              color: stokValue <= 5 ? Colors.red : const Color(0xFF1E88E5),
+                              color: stokValue <= 5
+                                  ? Colors.red
+                                  : const Color(0xFF1E88E5),
                             ),
                             const SizedBox(width: 4),
                             Text(
@@ -154,27 +160,32 @@ class ProductDetailPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                color: stokValue <= 5 ? Colors.red : const Color(0xFF1E88E5),
+                                color: stokValue <= 5
+                                    ? Colors.red
+                                    : const Color(0xFF1E88E5),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(width: 12),
-                      
+
                       // Badge kategori
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: Colors.purple.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.purple.withOpacity(0.5)),
+                          border:
+                              Border.all(color: Colors.purple.withOpacity(0.5)),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.category, size: 16, color: Colors.purple),
+                            const Icon(Icons.category,
+                                size: 16, color: Colors.purple),
                             const SizedBox(width: 4),
                             Text(
                               kategori,
@@ -195,7 +206,8 @@ class ProductDetailPage extends StatelessWidget {
                   // Tanggal Upload
                   Row(
                     children: [
-                      Icon(Icons.calendar_today, size: 16, color: Colors.blue[300]),
+                      Icon(Icons.calendar_today,
+                          size: 16, color: Colors.blue[300]),
                       const SizedBox(width: 4),
                       Text(
                         "Tanggal Upload: $tanggal",
@@ -243,9 +255,9 @@ class ProductDetailPage extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               SizedBox(
                 height: 120,
                 child: ListView.separated(
@@ -265,9 +277,11 @@ class ProductDetailPage extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: const Color(0xFF1E2A38),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: const Color(0xFF1E88E5).withOpacity(0.3)),
+                          border: Border.all(
+                              color: const Color(0xFF1E88E5).withOpacity(0.3)),
                         ),
-                        child: const Icon(Icons.broken_image, color: Colors.grey),
+                        child:
+                            const Icon(Icons.broken_image, color: Colors.grey),
                       );
                     }
 
@@ -293,7 +307,8 @@ class ProductDetailPage extends StatelessWidget {
                             width: 120,
                             height: 120,
                             color: const Color(0xFF1E2A38),
-                            child: const Icon(Icons.broken_image, color: Colors.grey),
+                            child: const Icon(Icons.broken_image,
+                                color: Colors.grey),
                           ),
                         ),
                       ),
@@ -302,25 +317,30 @@ class ProductDetailPage extends StatelessWidget {
                 ),
               ),
             ],
-            
+
             const SizedBox(height: 20),
-            
+
             // 6. Tombol aksi
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      // Implementasi keranjang
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Ditambahkan ke keranjang'),
-                          backgroundColor: Color(0xFF1E88E5),
-                        ),
-                      );
+                    onPressed: () async {
+                      final waUrl = Uri.encodeFull(
+                          "https://wa.me/?text=Halo, saya ingin memesan produk: ${product['nama_produk'] ?? 'Produk'}");
+                      if (await canLaunch(waUrl)) {
+                        await launch(waUrl);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Tidak dapat membuka WhatsApp'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
-                    icon: const Icon(Icons.shopping_cart),
-                    label: const Text("Tambah ke Keranjang"),
+                    icon: const Icon(Icons.chat),
+                    label: const Text("Pesan via WhatsApp"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1E88E5),
                       foregroundColor: Colors.white,
@@ -354,7 +374,7 @@ class ProductDetailPage extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 20),
           ],
         ),

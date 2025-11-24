@@ -56,77 +56,131 @@ class _AddStorePageState extends State<AddStorePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Tambah Toko")),
+      backgroundColor: const Color(0xFF0F1419), // Background gelap
+      appBar: AppBar(
+        title: const Text("Tambah Toko"),
+        backgroundColor: const Color(0xFF1E88E5),
+        foregroundColor: Colors.white,
+        elevation: 4,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              // =============================
-              // NAMA TOKO
-              // =============================
               TextFormField(
                 controller: namaTokoController,
-                decoration: const InputDecoration(
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
                   labelText: "Nama Toko",
-                  border: OutlineInputBorder(),
+                  labelStyle: const TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFF42A5F5)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  fillColor: const Color(0xFF1E2A38),
+                  filled: true,
                 ),
-                validator: (v) =>
-                    v == null || v.isEmpty ? "Nama toko tidak boleh kosong" : null,
+                validator: (v) => v == null || v.isEmpty
+                    ? "Nama toko tidak boleh kosong"
+                    : null,
               ),
               const SizedBox(height: 16),
-
-              // =============================
-              // DESKRIPSI
-              // =============================
               TextFormField(
                 controller: deskripsiController,
                 maxLines: 3,
-                decoration: const InputDecoration(
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
                   labelText: "Deskripsi",
-                  border: OutlineInputBorder(),
+                  labelStyle: const TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFF42A5F5)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  fillColor: const Color(0xFF1E2A38),
+                  filled: true,
                 ),
-                validator: (v) =>
-                    v == null || v.isEmpty ? "Deskripsi tidak boleh kosong" : null,
+                validator: (v) => v == null || v.isEmpty
+                    ? "Deskripsi tidak boleh kosong"
+                    : null,
               ),
               const SizedBox(height: 16),
-
-              // =============================
-              // ALAMAT
-              // =============================
               TextFormField(
                 controller: alamatController,
                 maxLines: 2,
-                decoration: const InputDecoration(
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
                   labelText: "Alamat",
-                  border: OutlineInputBorder(),
+                  labelStyle: const TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFF42A5F5)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  fillColor: const Color(0xFF1E2A38),
+                  filled: true,
                 ),
                 validator: (v) =>
                     v == null || v.isEmpty ? "Alamat tidak boleh kosong" : null,
               ),
               const SizedBox(height: 16),
-
-              // =============================
-              // KONTAK
-              // =============================
               TextFormField(
                 controller: kontakController,
-                decoration: const InputDecoration(
-                  labelText: "Kontak",
-                  border: OutlineInputBorder(),
-                ),
                 keyboardType: TextInputType.phone,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: "Kontak",
+                  labelStyle: const TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Color(0xFF42A5F5)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  fillColor: const Color(0xFF1E2A38),
+                  filled: true,
+                ),
                 validator: (v) =>
                     v == null || v.isEmpty ? "Kontak tidak boleh kosong" : null,
               ),
               const SizedBox(height: 24),
-
-              // =============================
-              // SUBMIT BUTTON
-              // =============================
               ElevatedButton(
                 onPressed: loadingSubmit ? null : simpanToko,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1E88E5),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 4,
+                ),
                 child: loadingSubmit
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text("Buat Toko"),
